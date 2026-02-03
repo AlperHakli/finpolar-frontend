@@ -13,3 +13,6 @@ Modern React UI for **Agentic Financial Intelligence**.
 ### ⚙️ Setup
 1. `npm install`
 2. `npm run dev`
+
+### 🔗 Project Links
+- **Backend Repository:** https://github.com/AlperHakli/finpolar-backend
