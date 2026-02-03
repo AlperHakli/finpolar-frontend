@@ -1,0 +1,10 @@
+
+@import "tailwindcss";
+
+/* Finpolar Genel Teması */
+body {
+  background-color: #ffffff; /* GitHub koyu teması gibi */
+  color: #e6edf3;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
