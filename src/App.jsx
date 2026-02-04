@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from "react";
-
+import { useState, useRef, useEffect, act } from "react";
+import { StockAnalysisPage , StockAnalysisSkeleton } from "./pages";
 import  Markdown  from "react-markdown";
+import { fetchSingleTickerInformation } from "./api_requests";
 
 function App() {
   const [tabs, setTabs] = useState([{ id: "chat", title: "AI Assistant", type: "chat" }]);
@@ -9,9 +10,16 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const stocks = ["THYAO", "EREGL", "SASA", "SISE", "KCHOL", "GARAN", "ASELS"];
+  const [tickerData , setTickerData] = useState(null)
 
 
   const reference = useRef(null);
+
+  const callSingleTickerFetchApi = async ({tickername}) => {
+    const data = await fetchSingleTickerInformation({ticker: tickername});
+    setTickerData(data)
+
+  }
 
   const scrollToBottom = () => {
 
@@ -23,6 +31,15 @@ function App() {
     scrollToBottom(); 
   }, [messages]);
 
+  useEffect(() => {
+    if(activeTabId !=="chat" && activeTabId) {
+      const nulldata = {name:"loading...",currentPrice:"loading...",sector:"loading..."}
+      setTickerData(null);
+      callSingleTickerFetchApi({tickername:activeTabId});
+    } 
+
+  },[activeTabId]);
+
   const openTab = (stock) => {
     const existingTab = tabs.find((t) => t.id === stock);
     if (existingTab) {
@@ -31,6 +48,7 @@ function App() {
       const newTab = { id: stock, title: stock, type: "stock" };
       setTabs([...tabs, newTab]);
       setActiveTabId(stock);
+      
     }
   };
 
@@ -153,7 +171,7 @@ function App() {
                     onClick={(e) => closeTab(e, tab.id)}
                     className="hover:bg-slate-200 rounded-md w-5 h-5 flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors"
                   >
-                    ×
+                    
                   </button>
                 )}
               </div>
@@ -177,22 +195,22 @@ function App() {
              {messages.map((item, index) => (
               <div
                 key={index}
-                // Kapsayıcı: Kullanıcı sağda, AI solda
+               
                 className={`flex w-full ${item.role === "user" ? "justify-end mb-6" : "justify-start mb-10"}`}
               >
                 {item.role === "user" ? (
-                  // KULLANICI: Senin o sevdiğin mavi balon yapısı
+                
                   <div className="p-4 rounded-2xl max-w-[85%] shadow-sm bg-blue-600 text-white rounded-tr-none ml-12">
                     <div className="text-sm leading-relaxed whitespace-pre-wrap">
                       {item.message}
                     </div>
                   </div>
                 ) : (
-                  // AI: Gemini/ChatGPT gibi doğrudan arka planda, balonsuz yapı
+
                   <div className="w-full max-w-3xl mr-12"> 
-                    {/* 'prose' sınıfı Markdown'ın düzgün görünmesini sağlar */}
+
                     <div className="prose prose-sm max-w-none text-slate-800 leading-relaxed">
-                      {/* Markdown bileşeninin doğru kullanımı */}
+                
                       <Markdown>
                         {item.message}
                       </Markdown>
@@ -206,9 +224,14 @@ function App() {
                 </div>
               )
             ) : (
-              <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-          
-                <h2 className="text-5xl font-black text-slate-900 capitalize">{activeTabId}</h2>
+              <div className="max-w-6xl mx-auto">
+                {!tickerData ? (
+                <StockAnalysisSkeleton />
+              ) : (
+                <StockAnalysisPage data={tickerData} />
+              )}
+
+            
               </div>
             )}
           </div>
