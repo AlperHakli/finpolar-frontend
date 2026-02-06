@@ -1,7 +1,11 @@
+export const mainUrl = "http://127.0.0.1:8083";
+
+
+
 // fetch single ticker information
 export const fetchSingleTickerInformation = async ({ticker}) => {
 
-    const url = `http://127.0.0.1:8080/stocks/single-ticker?ticker=${ticker}`
+    const url = `${mainUrl}/stocks/single-ticker?ticker=${ticker}`
 try{
 
     const response = await fetch(url , {

@@ -1,3 +1,48 @@
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+
+function StockChart({ datahistory }) {
+  // Eğer veri henüz gelmediyse veya boşsa boş dön
+  if (!datahistory || datahistory.length === 0) return null;
+
+  return (
+    <div className="w-full h-full min-h-[350px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={datahistory} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+          
+          <XAxis 
+            dataKey="date" 
+            hide={true} 
+          />
+          
+          <YAxis 
+            domain={['auto', 'auto']} 
+            hide={true} 
+          />
+
+          
+          <Tooltip 
+            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+            labelClassName="text-slate-400 font-medium"
+            itemStyle={{ color: '#2563eb', fontWeight: 'bold' }}
+          />
+
+         
+          <Line 
+            type="monotone" 
+            dataKey="price" 
+            stroke="#2563eb" 
+            strokeWidth={3} 
+            dot={false} 
+            activeDot={{ r: 6, strokeWidth: 0 }} 
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+
 
 
 
@@ -55,13 +100,13 @@ export function StockAnalysisPage({ data }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <div className="lg:col-span-3 h-[400px] bg-white rounded-4xl border-2 border-dashed border-slate-200 flex items-center justify-center text-slate-400 font-medium italic shadow-inner">
-          At Future updates visualizing data for {symbol}...
+          <StockChart datahistory={data.history} />
         </div>
         
         <div className="space-y-4">
           <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
             <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-            AI Insights
+            Summary
           </h3>
           <div className="p-5 bg-blue-50/40 rounded-3xl border border-blue-100 text-sm text-slate-700 leading-relaxed italic shadow-sm">
             {displaySummary}

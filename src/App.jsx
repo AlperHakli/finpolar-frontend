@@ -2,6 +2,8 @@ import { useState, useRef, useEffect, act } from "react";
 import { StockAnalysisPage , StockAnalysisSkeleton } from "./pages";
 import  Markdown  from "react-markdown";
 import { fetchSingleTickerInformation } from "./api_requests";
+import { v4 as uuidv4 } from 'uuid';
+import { mainUrl } from "./api_requests";
 
 function App() {
   const [tabs, setTabs] = useState([{ id: "chat", title: "AI Assistant", type: "chat" }]);
@@ -11,6 +13,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const stocks = ["THYAO", "EREGL", "SASA", "SISE", "KCHOL", "GARAN", "ASELS"];
   const [tickerData , setTickerData] = useState(null)
+  const [sessionID , setSessionID]= useState(() => uuidv4 ) 
+
 
 
   const reference = useRef(null);
@@ -30,6 +34,7 @@ function App() {
 
     scrollToBottom(); 
   }, [messages]);
+
 
   useEffect(() => {
     if(activeTabId !=="chat" && activeTabId) {
@@ -70,9 +75,9 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:8080/analysis/chat?llm_api_key=wwq", {
+      const response = await fetch(`${mainUrl}/analysis/chat`, {
         method: "POST",
-        body: JSON.stringify({ message: query }),
+        body: JSON.stringify({ message: query , session_id: sessionID}),
         headers: { "Content-Type": "application/json" },
       });
 
@@ -256,7 +261,7 @@ function App() {
                 </button>
               </div>
               <p className="text-center text-[10px] text-slate-400 mt-3 tracking-wide uppercase">
-                AI can make mistakes. Check important info.
+                Not financial advice. AI may provide inaccurate data. Verify important info.
               </p>
             </div>
           )}
