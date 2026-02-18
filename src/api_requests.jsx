@@ -1,11 +1,11 @@
-export const mainUrl = "http://127.0.0.1:8083";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-
+console.log({API_BASE_URL})
 
 // fetch single ticker information
 export const fetchSingleTickerInformation = async ({ticker}) => {
 
-    const url = `${mainUrl}/stocks/single-ticker?ticker=${ticker}`
+    const url = `${API_BASE_URL}/stocks/single-ticker?ticker=${ticker}`
 try{
 
     const response = await fetch(url , {

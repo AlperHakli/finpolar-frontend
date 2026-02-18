@@ -3,7 +3,10 @@ import { StockAnalysisPage , StockAnalysisSkeleton } from "./pages";
 import  Markdown  from "react-markdown";
 import { fetchSingleTickerInformation } from "./api_requests";
 import { v4 as uuidv4 } from 'uuid';
-import { mainUrl } from "./api_requests";
+
+
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 
 function App() {
   const [tabs, setTabs] = useState([{ id: "chat", title: "AI Assistant", type: "chat" }]);
@@ -75,13 +78,20 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${mainUrl}/analysis/chat`, {
+      const response = await fetch(`${API_BASE_URL}/analysis/chat`, {
         method: "POST",
         body: JSON.stringify({ message: query , session_id: sessionID}),
         headers: { "Content-Type": "application/json" },
       });
 
       if (!response.body) return;
+
+
+      if(response.status === 429){
+
+        setMessages((prev) => [...prev , {role: "assistant" , message: "You've reached your daily limit. To ensure fair usage for everyone, requests are capped. See you tomorrow! 🚀"}]);
+        return;
+      }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
