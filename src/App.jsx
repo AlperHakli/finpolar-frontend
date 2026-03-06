@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { useState, useRef, useEffect, act } from "react";
 import { StockAnalysisPage , StockAnalysisSkeleton } from "./pages";
 import  Markdown  from "react-markdown";
@@ -135,6 +136,23 @@ function App() {
     }
   };
 
+=======
+import { ChatProvider } from "./contexts/ChatContext";
+import { AnalysisProvider } from "./contexts/AnalysisContext";
+import { useUIContext } from "./contexts/UIContext";
+import { Header } from "./components/Header";
+import { SideBar } from "./components/SideBar"
+import { NewsPage } from "./pages/NewsPage";
+import { ChatPage } from "./pages/chat/ChatPage";
+import { StocksPage } from "./pages/StocksPage";
+import { ErrorPage } from "./pages/ErrorPage";
+import { SingleStockPage } from "./pages/SingleStockPage";
+import { MainPage } from "./pages/MainPage";
+import { UIProvider } from "./contexts/UIContext";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+function AppContent() {
+
+>>>>>>> Stashed changes
   return (
     <div className="flex flex-col h-screen bg-white font-sans antialiased text-slate-900">
       {/* HEADER */}
@@ -169,6 +187,7 @@ function App() {
 
         {/* MAIN AREA */}
         <main className="flex-1 flex flex-col bg-slate-50">
+<<<<<<< Updated upstream
           <div className="flex bg-slate-100 border-b border-slate-200 px-2 pt-2 gap-1">
             {tabs.map((tab) => (
               <div
@@ -275,10 +294,48 @@ function App() {
               </p>
             </div>
           )}
+=======
+          {/*<TabHeaders />
+          <MainTabOrganizer /> */}
+          <Routes>
+            {/* AI chat page */}
+            <Route path="/ai" element={<ChatPage />} />
+            {/* Main Page */}
+            <Route path="/" element={<MainPage />} />
+            {/* News page */}
+            <Route path="/news" element={<NewsPage />} />
+            {/* Stocks page */}
+            <Route path="/stocks" element={<StocksPage />} />
+            {/*Single Stock page*/}
+            <Route path="/stocks/:ticker" element={<SingleStockPage />} />
+
+            {/*Error page */}
+
+            <Route path="*" element={<ErrorPage />} />
+
+          </Routes>
+>>>>>>> Stashed changes
         </main>
       </div>
     </div>
   );
 }
 
+<<<<<<< Updated upstream
+=======
+function App() {
+  return (
+    <Router>
+      <UIProvider>
+        <AnalysisProvider>
+          <ChatProvider>
+            <AppContent />
+          </ChatProvider>
+        </AnalysisProvider>
+      </UIProvider>
+    </Router>
+  );
+}
+
+>>>>>>> Stashed changes
 export default App;
