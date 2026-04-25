@@ -4,8 +4,10 @@ import { SideMenu } from "../components/stocks/sections/SideMenu";
 import { CardOrganizer } from "../components/stocks/sections/CardOrganizer";
 import { PeriodSelector } from "../components/stocks/sections/PeriodSelector";
 import { AiInsights } from "../components/stocks/sections/AiInsights.jsx";
+import { StockInfoCardOrganizer } from "../components/stocks/sections/StockInfoCardOrganizer.jsx";
 import { useAnalysisContext } from "../contexts/AnalysisContext"
-import { indicatorsData } from "../mockdata";
+import { StockPageSectionHeader } from "../components/StockPageSectionHeader.jsx";
+import { indicatorsData, dummyStockInfoData } from "../mockdata";
 
 export function StocksPage() {
   const { stockData, stockHistory, watchList } = useAnalysisContext();
@@ -15,7 +17,7 @@ export function StocksPage() {
     <div className="flex flex-row w-full max-w-400 bg-white px-10 pr-20 gap-10">
 
       {/* SOL TARAF */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 gap-20">
         <StockHeader stockData={stockData} />
         <div className="mt-8">
           <StockChart datahistory={stockHistory} />
@@ -24,13 +26,24 @@ export function StocksPage() {
           </div>
         </div>
 
-        <div className="mt-10">
+        {/* AI Insights section */}
+        <section className="flex flex-col gap-10">
+          <StockPageSectionHeader header={"AI Insights"} />
           <AiInsights />
-        </div>
+        </section>
 
-        <div className="mt-10">
+        {/* Stock Info Section */}
+        <section className="flex flex-col gap-10">
+          <StockPageSectionHeader header={"Stock Info"} />
+          <StockInfoCardOrganizer stockData={dummyStockInfoData} />
+        </section>
+
+        {/* Stock Indicators Section */}
+        <section className="flex flex-col gap-10">
+          <StockPageSectionHeader header={"Stock Indicators"} />
           <CardOrganizer indicators={indicatorsData} />
-        </div>
+        </section>
+
 
 
 
@@ -41,10 +54,10 @@ export function StocksPage() {
       {/* pr-10 ile menülerin sağını duvardan açtık */}
       <div className="w-80 flex-shrink-0 flex flex-col pt-10 pr-10 gap-30">
         <div>
-          <SideMenu watchList={watchList} />
+          <SideMenu watchList={watchList} headerContent={"Top 10 Stocks"} />
         </div>
         <div>
-          <SideMenu watchList={watchList} />
+          <SideMenu watchList={watchList} headerContent={"PlaceHolder"}/>
         </div>
 
 

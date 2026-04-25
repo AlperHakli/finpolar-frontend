@@ -1,6 +1,6 @@
 import { useAnalysisContext } from "../../../contexts/AnalysisContext";
-
-export function SideMenu({ watchList }) {
+import { SideMenuHeader } from "../components/SideMenuHeader";
+export function SideMenu({ watchList , headerContent }) {
     const { setTicker, ticker: currentTicker, loadingWatchList } = useAnalysisContext();
 
     if (loadingWatchList || !watchList) {
@@ -11,7 +11,7 @@ export function SideMenu({ watchList }) {
         <div className="w-85 h-full bg-white border-l border-slate-100 flex flex-col">
 
             <div className="p-2.5 border-b border-slate-50 bg-slate-50/30">
-                <h2 className="text-sm font-extrabold text-slate-800 tracking-tight uppercase">İzleme Listesi</h2>
+                <h2 className="text-sm font-extrabold text-slate-800 tracking-tight uppercase">{headerContent}</h2>
             </div>
 
             <div className="flex-1 overflow-y-auto">

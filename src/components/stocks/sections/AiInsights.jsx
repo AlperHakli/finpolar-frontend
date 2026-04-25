@@ -1,6 +1,6 @@
 import { dummytext , dummysummarytext } from "../../../mockdata"
 import { AIScoreBar } from "../components/AiScoreBar"
-
+import { StockPageSectionHeader } from "../../StockPageSectionHeader"
 export function AiInsights() {
 
     return (
@@ -8,7 +8,7 @@ export function AiInsights() {
 
         <div className="flex flex-col gap-10">
 
-            <span className="font-bold text-shadow-gray-300 text-3xl">AI Insights</span>
+            
 
             <div>
 

@@ -1,15 +1,24 @@
+import { useUIContext } from "../contexts/UIContext";
+
 import { NavLink } from "react-router-dom"
 
 
 
 export function SideBar() {
 
-
+const {isSidebarOpen} = useUIContext();
   return (
 
-    <aside className="w-32 border-r border-slate-200 bg-white h-full flex flex-col p-4">
+    <aside 
+    className={`
+        border-r border-slate-200 bg-white h-full flex flex-col
+        transition-all duration-300 ease-in-out overflow-hidden flex-shrink-0
+        ${isSidebarOpen ? "w-1/12 p-4" : "w-0 p-0 border-none"} 
+      `}
+      
+      >
 
-      <nav className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-2 w-56">
 
         <NavLink
           to={"/stocks"}
