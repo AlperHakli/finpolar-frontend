@@ -3,29 +3,45 @@ import { v4 as uuidv4 } from "uuid";
 import { useUIContext } from "./UIContext";
 import { fetchChatApi } from "../logic/apiRequests";
 
-
-export const ChatContext = createContext();
-
+const ChatContext = createContext();
 
 export const ChatProvider = ({ children }) => {
-  const [sessionID, setSessionID] = useState(() => uuidv4())
+  const [sessionID, setSessionID] = useState(() => uuidv4());
   const [query, setQuery] = useState("");
   const [messages, setMessages] = useState([]);
-  const {setIsLoading} = useUIContext();
+  const { setIsLoading } = useUIContext();
 
   const handleUserMessage = async () => {
     if (!query.trim()) return;
 
     const userMessage = { role: "user", message: query };
-    setMessages((prev) => [...prev, userMessage, { role: "assistant", message: "" }]);
+    const assistantEmptyMessage = { role: "assistant", message: "" };
+
+    const targetAssistantIndex = messages.length + 1;
+
+    setMessages((prev) => [...prev, userMessage, assistantEmptyMessage]);
     setQuery("");
     setIsLoading(true);
 
     try {
       const response = await fetchChatApi({
-         sessionID: sessionID,
-         query:query,
-        });
+        body: { sessionID: sessionID, message: query }
+      });
+
+      if (response.status === 429) {
+        setMessages((prev) => 
+          prev.map((msg, i) => 
+            i === targetAssistantIndex 
+              ? { ...msg, message: "⚠️ Too many requests. Please wait a moment." } 
+              : msg
+          )
+        );
+        return; 
+      }
+
+      if (!response.ok) {
+        throw new Error(`Server returned status: ${response.status}`);
+      }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -40,37 +56,45 @@ export const ChatProvider = ({ children }) => {
           const lines = rawChunk.split("\n");
 
           lines.forEach((line) => {
-            if (line.startsWith("data: ")) {
+            const cleanedLine = line.trim();
+            if (cleanedLine.startsWith("data: ")) {
               try {
-                const jsonString = line.replace("data: ", "").trim();
+                const jsonString = cleanedLine.replace("data: ", "").trim();
                 const parsed = JSON.parse(jsonString);
-                const content = parsed.text;
 
-                setMessages((prev) => {
-                  const lastIndex = prev.length - 1;
-                  return prev.map((msg, i) => {
-                    if (i === lastIndex) {
-                      return { ...msg, message: msg.message + content };
-                    }
-                    return msg;
-                  });
-                });
+                const content = parsed.text || parsed.content || "";
+
+                if (content) {
+                  setMessages((prev) => 
+                    prev.map((msg, i) => 
+                      i === targetAssistantIndex 
+                        ? { ...msg, message: msg.message + content } 
+                        : msg
+                    )
+                  );
+                }
               } catch (e) {
-                console.log("Parsing skip:", line);
+                console.log("Parsing skip:", cleanedLine);
               }
             }
           });
         }
       }
     } catch (err) {
-      console.error(err);
+      // console.error("Stream hatası yakalandı:", err);
+      setMessages((prev) => 
+        prev.map((msg, i) => 
+          i === targetAssistantIndex 
+            ? { ...msg, message: "❌ Sunucuyla bağlantı kurulamadı veya yanıt alınamadı." } 
+            : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-  const value =
-  {
+  const value = {
     messages,
     setMessages,
     query,
@@ -78,15 +102,13 @@ export const ChatProvider = ({ children }) => {
     sessionID,
     setSessionID,
     handleUserMessage
-    
   };
 
-
-
-  return <ChatContext.Provider value={value}>
-    {children}
-  </ChatContext.Provider>
-
+  return (
+    <ChatContext.Provider value={value}>
+      {children}
+    </ChatContext.Provider>
+  );
 };
 
 export const useChatContext = () => useContext(ChatContext);

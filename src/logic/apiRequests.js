@@ -1,147 +1,89 @@
-import { apiConfig } from "../config";
+import { apiConfig } from "../config/apiconfig";
 
 
-
-// fetch single stock information except history
-export const fetchSingleStockInformation = async ({ ticker }) => {
-
-    const params = new URLSearchParams({ ticker: ticker });
-    const url = `${apiConfig.apiURL}/stocks/stock-detail?${params.toString()}`;
-
+// Manages all api requests
+const apiClient = async (endpoint, { method = "GET", body = null, params = {} } = {}) => {
     try {
+        
+        const url = new URL(`${apiConfig.apiURL}${endpoint}`);
+        if (params) {
+            Object.keys(params).forEach(key => {
+                if (params[key] !== undefined && params[key] !== null) {
+                    url.searchParams.append(key, params[key]);
+                }
+            });
+        }
 
-        const response = await fetch(url, {
-
-            method: "GET",
+        // request 
+        const options = {
+            method,
             headers: {
-                "Content-Type": "application/json"
-
-            }
-        })
-
-        if (!response.ok) {
-            const errorBody = await response.json().catch(() => ({}))
-            throw new Error(errorBody.detail || `Internal server error: ${response.status}`)
-
-
+                "Content-Type": "application/json",
+            },
         };
 
-        const data = await response.json();
+        if (body && method !== "GET") {
+            options.body = JSON.stringify(body);
+        }
 
-        console.log(`Single ticker data: ${data}`)
-
-        return data;
-
-
-    }
-    catch (error) {
-        console.error(`Fetch error in fetchSingleStockInformation  [${ticker}]:`, error.message);
-        throw error;
-    }
-
-}
-
-// only fetch single stock history
-export const fetchSingleStockHistory = async ({ ticker, period }) => {
-
-    const params = new URLSearchParams({ ticker: ticker, period: period })
-    const url = `${apiConfig.apiURL}/stocks/stock-history?${params.toString()}`
-    try {
-        const response = await fetch(url, {
-
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-
-            }
-
-        })
+        const response = await fetch(url.toString(), options);
 
 
         if (!response.ok) {
             const errorBody = await response.json().catch(() => ({}));
-            throw new Error(errorBody.detail || `Internal server error: ${response.status}`);
+            throw new Error(errorBody.detail || `HTTP Error: ${response.status}`);
         }
 
-        const data = await response.json();
+    
+        return await response.json();
 
-        console.log(`Single ticker history successfully fetched`)
-
-        return data.history;
-
-
-
-    }
-    catch (error) {
-
-        console.error(`Fetch error in fetchSingleStockHistory  [${ticker}]:`, error.message);
+    } catch (error) {
+        console.error(`API Client Error [${method} ${endpoint}]:`, error.message);
         throw error;
-
-    }
-
-
-}
-
-export const fetchWatchList = async () => {
-
-    const url = `${apiConfig.apiURL}/stocks/watchlist`
-
-    try {
-
-        const response = await fetch(url, {
-
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-
-
-        })
-
-        if (!response.ok) {
-            const errorBody = await response.json().catch(() => ({}));
-            throw new Error(errorBody.detail || `Internal server error: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        console.log(`Watchlist successfully fetched`)
-
-        return data;
-
-
-
-
-
-    }
-    catch (error) {
-
-        console.error(`Fetch error in fetchWatchList  [${ticker}]:`, error.message);
-        throw error;
-
     }
 };
 
-export const fetchChatApi = async ({ apiUrl = apiConfig.apiURL, sessionID, query }) => {
 
-
-    const response = await fetch(`${apiUrl}/analysis/chat`, {
-        method: "POST",
-        body: JSON.stringify({ message: query, session_id: sessionID }),
-        headers: { "Content-Type": "application/json" },
-    });
-
-
-    if (!response.ok) {
-        const error = {
-            status: response.status,
-            message: "Internal Server Error"
-        }
-
-        throw error;
-
-    }
-
-    return response;
-
+// fetch stock detail
+export const fetchSingleStockInformation = async  ({ ticker }) => {
+    return await apiClient("/stocks/stock-detail", { params: { ticker } });
+};
+export const fetchStockAiScore = async ({ticker , session_id}) => {
+    return await apiClient("/analysis/ai-asset-summary" , {params: {ticker , session_id}});
 }
+
+// fetch asset history
+export const fetchSingleStockHistory = async ({ ticker, period }) => {
+    return await apiClient("/stocks/stock-history", { params: { ticker, period } });
+};
+
+// fetch watchlist
+export const fetchWatchList = async () => {
+    return await apiClient("/stocks/watchlist");
+};
+
+// talk to ai
+export const fetchChatApi = async ({ body }) => {
+    try {
+        const url = `${apiConfig.apiURL}/analysis/chat`;
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+        });
+
+        return response;
+
+    } catch (error) {
+        console.error(`API Chat Client Error [POST /analysis/chat]:`, error.message);
+        throw error;
+    }
+};
+
+// fetch asset indicators
+export const fetchSingleStockIndicators = async ({ body }) => {
+    return await apiClient("/stocks/single-stock-indicators", { method: "POST", body });
+};

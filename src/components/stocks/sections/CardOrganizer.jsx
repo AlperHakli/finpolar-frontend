@@ -1,40 +1,80 @@
-import { IndicatorCard } from "../components/IndicatorCard.jsx";
+import { ExpandableIndicatorCard } from "../components/ExpandableIndicatorCard";
 
-export function CardOrganizer({ indicators = [] }) {
+export function IndicatorCardOrganizer({ indicators }) {
+  if (!indicators) {
+    return <div className="p-10 text-center animate-pulse text-slate-400 font-medium">İndikatörler yükleniyor...</div>;
+  }
+
+  // Backend'den gelen nesneleri parçalıyoruz
+  const rsi = indicators.rsi || {};
+  const ma = indicators.moving_averages || {};
+  const bb = indicators.bollinger_bands || {};
+  const macd = indicators.macd || {};
+  const vol = indicators.volume_analysis || {};
+
   return (
-    /* grid-cols-12: Hassas yerleşim için 12'li sistemi koruyoruz */
-    /* gap-2: Kartlar arasındaki boşluğu azalttık (sıkı düzen) */
-    <div className="grid grid-cols-12 gap-4 w-full px-10">
-      {indicators.map((indicator, index) => {
-        let spanClass = "";
+    <div className="w-full flex flex-col gap-2.5">
+      
+      {/* 1. RSI KARTI */}
+      <ExpandableIndicatorCard 
+        title="RSI (MOMENTUM)"
+        mainValue={Number(rsi.rsi_value || 0).toFixed(2)}
+        status={rsi.status || "NEUTRAL"}
+        extraData={[
+          { key: "Kapanış Fiyatı", value: `${Number(rsi.closing_price || 0).toFixed(2)} ₺` },
+          { key: "Sembol (Ticker)", value: rsi.ticker || "Bilinmiyor" }
+        ]}
+      />
 
-        if (index === 0) {
-          // ÜSTTEKİ 1. KART:
-          // col-start-3: Kart 3. sütundan başlar. (Solda 2 birimlik boşluk bırakır)
-          // col-span-4: 4 birim kaplar. (3, 4, 5, 6. sütunları doldurur)
-          spanClass = "col-span-4 col-start-3";
-        } else if (index === 1) {
-          // ÜSTTEKİ 2. KART:
-          // 1. kart 6. sütunda bittiği için, bu kart otomatik 7. sütundan başlar.
-          // col-span-4: 4 birim kaplar. (7, 8, 9, 10. sütunları doldurur)
-          // Bu sayede sağda da 2 birimlik (11 ve 12) boşluk kalır ve kartlar merkeze sıkışır.
-          spanClass = "col-span-4";
-        } else {
-          // ALTAKİ 4 KART (index >= 2):
-          // col-span-3: Her biri 3 birim kaplar (12 / 3 = 4 sütun).
-          // Tam bir satıra 4 tane sığacak şekilde hizalandı.
-          spanClass = "col-span-3";
-        }
+      {/* 2. HAREKETLİ ORTALAMALAR KARTI */}
+      <ExpandableIndicatorCard 
+        title="HAREKETLİ ORTALAMALAR"
+        mainValue={`${Number(ma.curr_price || 0).toFixed(2)} ₺`}
+        status={ma.status || "NEUTRAL"}
+        extraData={[
+          { key: "Anlık Fiyat", value: `${Number(ma.curr_price || 0).toFixed(2)} ₺` },
+          { key: `SMA Kısa (Periyot: ${ma.short_window || 20})`, value: Number(ma.sma_short || 0).toFixed(2) },
+          { key: `SMA Uzun (Periyot: ${ma.long_window || 50})`, value: Number(ma.sma_long || 0).toFixed(2) }
+        ]}
+      />
 
-        return (
-          <div key={indicator.id || index} className={spanClass}>
-            <IndicatorCard 
-              title={indicator.title} 
-              data={indicator.data} 
-            />
-          </div>
-        );
-      })}
+      {/* 3. BOLLINGER BANTLARI KARTI */}
+      <ExpandableIndicatorCard 
+        title="BOLLINGER BANTLARI"
+        mainValue={Number(bb.middle || 0).toFixed(2)} // Orta bant ana değer
+        status={bb.status || "NORMAL"}
+        extraData={[
+          { key: "Ham Fiyat", value: `${Number(bb.price || 0).toFixed(2)} ₺` },
+          { key: "Üst Bant", value: Number(bb.upper || 0).toFixed(2) },
+          { key: "Orta Bant (20 SMA)", value: Number(bb.middle || 0).toFixed(2) },
+          { key: "Alt Bant", value: Number(bb.lower || 0).toFixed(2) }
+        ]}
+      />
+
+      {/* 4. MACD TREND KARTI */}
+      <ExpandableIndicatorCard 
+        title="MACD TREND"
+        mainValue={Number(macd.m_line || 0).toFixed(2)} // MACD çizgisi ana değer
+        status={macd.status || "NEUTRAL"}
+        extraData={[
+          { key: "MACD Çizgisi", value: Number(macd.m_line || 0).toFixed(2) },
+          { key: "Sinyal Çizgisi", value: Number(macd.s_line || 0).toFixed(2) }
+        ]}
+      />
+
+      {/* 5. HACİM ANALİZİ KARTI */}
+      <ExpandableIndicatorCard 
+        title="HACİM ANALİZİ"
+        mainValue={Number(vol.rvol || 0).toFixed(2)} // RVOL değerini ana sütuna aldık, hacmi alta açtık
+        status={vol.status || "NORMAL"}
+        extraData={[
+          { key: "Mevcut Hacim", value: Math.round(vol.current_volume || 0).toLocaleString('tr-TR') },
+          { key: "Ortalama Hacim", value: Math.round(vol.avg_volume || 0).toLocaleString('tr-TR') },
+          { key: "Göreli Hacim (RVOL)", value: Number(vol.rvol || 0).toFixed(2) },
+          { key: "Fiyat Değişimi", value: `%${Number(vol.price_change || 0).toFixed(2)}` }
+        ]}
+      />
+
     </div>
   );
 }

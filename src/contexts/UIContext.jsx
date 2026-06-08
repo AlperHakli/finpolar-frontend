@@ -10,6 +10,8 @@ export const UIProvider = ({ children }) => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [isSidebarOpen , setIsSidebarOpen] = useState(false)
+    const [isMoreStockInformationOpen , setIsMoreStockInformationOpen] = useState(false)
+    const [isSummaryExpanded , setIsSummaryExpanded] = useState(false)
 
 
 
@@ -20,7 +22,12 @@ export const UIProvider = ({ children }) => {
         isLoading,
         setIsLoading,
         isSidebarOpen,
-        setIsSidebarOpen
+        setIsSidebarOpen,
+        isMoreStockInformationOpen,
+        setIsMoreStockInformationOpen,
+        isSummaryExpanded,
+        setIsSummaryExpanded
+
     };
 
 

@@ -6,7 +6,7 @@ export function StockInfoCard({ data }) {
       <div className="flex flex-row justify-between items-baseline">
 
         <span className="text-xs font-medium text-slate-400 uppercase tracking-wider group-hover:text-slate-600 transition-colors">
-          {data.key}
+          {data.label}
         </span>
         <span className="text-sm font-bold text-slate-700 tracking-tight">
           {data.value}

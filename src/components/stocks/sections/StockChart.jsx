@@ -5,7 +5,7 @@ export function StockChart({ datahistory }) {
   if (!datahistory || datahistory.length === 0) return null;
 
   return (
-    <div className="w-4/5 h-[350px]">
+    <div className="w-full h-[250px]">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={datahistory} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />

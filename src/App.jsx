@@ -12,6 +12,7 @@ import { SingleStockPage } from "./pages/SingleStockPage";
 import { ErrorPage } from "./pages/ErrorPage";
 import { SideBarButton } from "./components/SideBarButton";
 import { SideBar } from "./components/SideBar";
+import { NavLink } from "react-router-dom";
 
 
 function AppContent() {
@@ -21,13 +22,27 @@ function AppContent() {
 
       <header className="w-full py-3 px-4 border-b border-slate-100 flex justify-between items-center bg-white z-10">
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-5">
           <SideBarButton />
+                          <NavLink
+          to={"/"}
+          className={({ isActive }) =>
+            `p-3 rounded-lg flex items-center gap-2`
 
-
-          <h1 className="text-blue-600 text-xl font-black tracking-tighter">
+          }
+        >
+                    <h1 className="text-blue-600 text-xl font-black tracking-tighter">
             FINPOLAR <span className="text-slate-400 font-medium">AI</span>
           </h1>
+
+        </NavLink>
+
+
+        {/* <input 
+          type="text" 
+          placeholder="Hisse (Örn: THYAO)" 
+          className="w-full max-w-xl px-50 py-3 rounded-xl bg-slate-100 border-slate-700 focus:outline-none focus:border-emerald-500 transition"
+        /> */}
 
 
         </div>

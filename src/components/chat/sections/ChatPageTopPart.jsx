@@ -7,14 +7,14 @@ export function ChatPageTopPart() {
   const reference = useRef(null);
   const {messages} = useChatContext();
 
-  const scrollToBottom = () => {
-  reference.current?.scrollIntoView({ behavior: "smooth" });
-};
+//   const scrollToBottom = () => {
+//   reference.current?.scrollIntoView({ behavior: "smooth" });
+// };
 
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+//   useEffect(() => {
+//     scrollToBottom();
+//   }, [messages]);
 
   return (
     <div className="space-y-6 max-w-3xl mx-auto">

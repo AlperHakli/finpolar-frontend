@@ -8,10 +8,10 @@ export function SideMenu({ watchList , headerContent }) {
     }
 
     return (
-        <div className="w-85 h-full bg-white border-l border-slate-100 flex flex-col">
+        <div className="w-full h-full bg-white border-l border-slate-100 flex flex-col">
 
             <div className="p-2.5 border-b border-slate-50 bg-slate-50/30">
-                <h2 className="text-sm font-extrabold text-slate-800 tracking-tight uppercase">{headerContent}</h2>
+                <h2 className="text-md font-extrabold text-slate-800 tracking-tight uppercase">{headerContent}</h2>
             </div>
 
             <div className="flex-1 overflow-y-auto">
@@ -21,7 +21,7 @@ export function SideMenu({ watchList , headerContent }) {
                     return (
                         <button
                             key={data.symbol}
-                            onClick={() => setTicker(data.symbol)}
+                            onClick={() => setTicker(`${data.symbol}`)}
                            
                             className={`w-full flex items-center justify-between px-3 py-1.5 transition-all border-l-2 
                                 ${currentTicker === data.symbol
@@ -32,7 +32,7 @@ export function SideMenu({ watchList , headerContent }) {
                           
                             <div className="text-left flex flex-col leading-none">
                                 <span className="text-[11px] font-bold text-slate-700">
-                                    {data.symbol}
+                                    {data?.symbol.split(".")[0]}
                                 </span>
                             </div>
 
