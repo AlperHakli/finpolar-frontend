@@ -1,6 +1,6 @@
 export function BottomBar() {
   return (
-    <footer className="w-full bg-blue-600 text-white py-1.5 px-8 flex justify-between items-center text-[11px] font-medium tracking-wide z-20">
+    <footer className="w-full bg-blue-600 text-white py-1.5 px-8 flex justify-between items-center text-[8px] font-medium tracking-wide z-20">
       <div className="flex items-center gap-4">
         {/* Şimdilik boş ama görsel olarak dolu dursun diye küçük yer tutucular ekledim */}
         <div className="flex items-center gap-1.5">
