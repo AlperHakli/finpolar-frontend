@@ -2,7 +2,6 @@ import { ChatProvider } from "./contexts/ChatContext";
 import { AnalysisProvider } from "./contexts/AnalysisContext";
 import { UIProvider } from "./contexts/UIContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { BottomBar } from "./components/Bottombar";
 import { OuterPart } from "./components/OuterPart";
 import { MainPage } from "./pages/MainPage";
 import { ChatPage } from "./pages/chat/ChatPage";
@@ -72,7 +71,6 @@ function AppContent() {
 
         </main>
       </div>
-      <BottomBar />
 
 
 
