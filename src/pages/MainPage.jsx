@@ -2,7 +2,7 @@ import { TopVolumeGrid } from "../components/main/TopVolumeGrid";
 import { useAnalysisContext } from "../contexts/AnalysisContext";
 import { MarketGridOverview } from "../components/stocks/sections/MarketGridOverview";
 import { StocksBySectorGridView } from "../components/stocks/sections/StocksBySectorGridView";
-import { SearchBar } from "../components/main/searchbar";
+import { SearchBar } from "../components/main/Searchbar";
 import { StockChart } from "../components/stocks/sections/StockChart";
 import { IndicesOverview } from "../components/stocks/sections/MarketIndices";
 import { apiConfig } from "../config/apiconfig";
