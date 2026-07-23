@@ -1,37 +1,60 @@
+import { TopVolumeGrid } from "../components/main/TopVolumeGrid";
+import { useAnalysisContext } from "../contexts/AnalysisContext";
+import { MarketGridOverview } from "../components/stocks/sections/MarketGridOverview";
+import { StocksBySectorGridView } from "../components/stocks/sections/StocksBySectorGridView";
+import { SearchBar } from "../components/main/searchbar";
+import { StockChart } from "../components/stocks/sections/StockChart";
+import { IndicesOverview } from "../components/stocks/sections/MarketIndices";
+import { apiConfig } from "../config/apiconfig";
 export  function MainPage() {
+  const { top10Volume ,stocksBySector , marketIndices , random10assets,  mainMenuGraph, setCurrentSectorName , singleSectorStocksList } = useAnalysisContext();
   return (
-    <div className="min-h-screen bg-white text-white p-6 space-y-6">
+    <div className="flex flex-col gap-15 px-2">
 
-      {/* 2. Ana Gövde Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Sol Geniş Taraf (AI + Sektör) */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="p-6 bg-slate-900 rounded-2xl border border-slate-800">
-            <h2 className="text-xl font-semibold mb-4 text-emerald-400 flex items-center gap-2">
-              ✨ Yapay Zekanın Öne Çıkardıkları
-            </h2>
-            {/* AI Hisse Kartları Buraya (Grid veya Flex) */}
-          </div>
-          
-          <div className="p-6 bg-slate-900 rounded-2xl border border-slate-800">
-            <h2 className="text-xl font-semibold mb-4 text-cyan-400">Sektörel Dağılım</h2>
-            {/* Sektör Butonları/Isı Haritası Buraya */}
-          </div>
-        </div>
+      <SearchBar  />
+      
+      <MarketGridOverview watchList={top10Volume} headerContent={"En çok hacme sahip hisseler"} />
 
-        {/* Sağ Dar Taraf (En Çok Artanlar + Hacim Patlaması) */}
-        <div className="space-y-6">
-          <div className="p-6 bg-slate-900 rounded-2xl border border-slate-800">
-            <h2 className="text-xl font-semibold mb-4 text-red-400">Günün Hareketleri</h2>
-            {/* En Çok Artan/Azalan Listesi */}
-          </div>
-
-          <div className="p-6 bg-slate-900 rounded-2xl border border-slate-800">
-            <h2 className="text-xl font-semibold mb-4 text-amber-400">🔥 Olağanüstü Hacimlenenler</h2>
-            {/* RVOL Listesi */}
-          </div>
-        </div>
+      {mainMenuGraph?.data?.["XU100.IS"] && (
+      <div className="flex flex-col gap-2">
+        <h3 className="font-bold">
+          {mainMenuGraph.data["XU100.IS"].symbol.split(".")[0]}{" "}
+          <span className="text-gray-500">günlük grafik</span>
+        </h3>
+        <StockChart datahistory={mainMenuGraph.data["XU100.IS"].history} />
       </div>
+    )}
+
+      <IndicesOverview indicesList={marketIndices} headerContent={"Hisse Endeksleri"} />
+      
+
+      <StocksBySectorGridView headerContent={"Sektöre göre hisse dağılımı"} stocksBySector={stocksBySector} setCurrentSectorName={setCurrentSectorName} singleSectorStocksList={singleSectorStocksList}/>
+
+
+
+          {mainMenuGraph?.data?.["GC=F"] && (
+      <div className="flex flex-col gap-2">
+        <h3 className="font-bold">
+          {mainMenuGraph.data["GC=F"].symbol.split(".")[0]}{" "}
+          <span className="text-gray-500">günlük grafik</span>
+        </h3>
+        <StockChart datahistory={mainMenuGraph.data["GC=F"].history} />
+      </div>
+    )}
+
+
+    <MarketGridOverview watchList={random10assets?.stockstats} headerContent={"Hisseler"} />
+
+    
+    <MarketGridOverview watchList={random10assets?.commoditystats} headerContent={"Emtialar"} />
+
+
+
+
+
+      
+
+    
     </div>
   );
 }

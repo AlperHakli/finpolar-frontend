@@ -13,8 +13,9 @@ export const SINGLE_STOCK_PAGE_SETTINGS = {
 
 
     }
+}
+export const MAIN_PAGE_SETTINGS = {
 
-
-
+    SECTOR_NAMES_SETTINGS_TR: ["Industrials" , "Consumer Cyclical" , "Financial Services" , "Utilities" , "Basic Materials" , "Healthcare" , "Energy" , "Real Estate"]
 
 }

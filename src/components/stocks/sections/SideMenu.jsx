@@ -1,11 +1,12 @@
 import { useAnalysisContext } from "../../../contexts/AnalysisContext";
 import { SideMenuHeader } from "../components/SideMenuHeader";
+import { SideMenuSkeleton } from "../../../skeletons/SideMenuSkelaton";
 export function SideMenu({ watchList , headerContent }) {
     const { setTicker, ticker: currentTicker, loadingWatchList } = useAnalysisContext();
 
-    if (loadingWatchList || !watchList) {
-        return <div className="w-64 h-full border-l border-slate-100 p-2 text-[10px] text-slate-400">Yükleniyor...</div>;
-    }
+    // if (loadingWatchList || !watchList) {
+    //     return <SideMenuSkeleton/>
+    // }
 
     return (
         <div className="w-full h-full bg-white border-l border-slate-100 flex flex-col">
@@ -15,7 +16,7 @@ export function SideMenu({ watchList , headerContent }) {
             </div>
 
             <div className="flex-1 overflow-y-auto">
-                {watchList.map((data) => {
+                {watchList?.map((data) => {
                     const isPositive = data.changePercent >= 0;
 
                     return (
