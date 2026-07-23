@@ -6,7 +6,7 @@ export function StockSummary({text , limit = SINGLE_STOCK_PAGE_SETTINGS.SUMMARY_
 const {isSummaryExpanded , setIsSummaryExpanded} = useUIContext();    
 
 if(!text){
-    return <h1>Missing summary...</h1>
+    return 
 }
 
 if (text.length <= limit) {

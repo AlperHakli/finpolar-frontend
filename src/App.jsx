@@ -61,9 +61,7 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/ai" element={<ChatPage />} />
-            <Route path="/news" element={<NewsPage />} />
             <Route path="/stocks" element={<StocksPage />} />
-            <Route path="/stocks/:ticker" element={<SingleStockPage />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
 
